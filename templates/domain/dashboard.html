@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block extra_header %}
+    <li class="nav-item active">
+        <a class="nav-link" href="{% url 'domain:dashboard' %}">Dashboard</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'domain:add' %}">Add Domain</a>
+    </li>
+{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Welcome, {{request.user}}</h5>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Domain name</th>
+                    <th scope="col">Created At</th>
+                    <th scope="col">Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for domain in domains %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ domain.name }}</td>
+                    <td>{{ domain.created_at }}</td>
+                    <td> {{ domain.status }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

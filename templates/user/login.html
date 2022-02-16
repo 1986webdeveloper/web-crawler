@@ -1,0 +1,22 @@
+<!-- login.html -->
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block extra_header %}
+
+
+{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Login</h5>
+            <form method="POST" autocomplete="off">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
