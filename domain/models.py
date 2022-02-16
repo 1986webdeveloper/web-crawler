@@ -26,8 +26,8 @@ class Domain(TimeStampModel):
         return "FETCHING URL"
 
 
-class Url(models.Model):
-    url = models.CharField(max_length=150)
+class Url(TimeStampModel):
+    url = models.CharField(max_length=1024)
     domain = models.CharField(max_length=255)
 
     def __str__(self):
