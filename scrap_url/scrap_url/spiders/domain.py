@@ -1,33 +1,15 @@
-# import scrapy
-#
-#
-# class DomainSpider(scrapy.Spider):
-#     name = 'domain'
-#     allowed_domains = ['domain.com']
-#     start_urls = ['http://domain.com/']
-#
-#     # def __init__(self, *args, **kwargs):
-#     #     self.url = kwargs.get('url')
-#     #     self.domain = kwargs.get('domain')
-#     #     self.start_urls = [self.url]
-#     #     self.allowed_domains = [self.domain]
-#
-#     def parse(self, response):
-#         pass
-
 import scrapy
 from scrapy.linkextractors import LinkExtractor
 from urllib.parse import urlparse
-
 from scrap_url.scrap_url.items import ScrapUrlItem
 
 
-class TheodoSpider(scrapy.Spider):
-    name = "theodo"
+class LinkSpider(scrapy.Spider):
+    name = "link-spider"
     start_urls = []
 
     def __init__(self, *args, **kwargs):
-        super(TheodoSpider, self).__init__(*args, **kwargs)
+        super(LinkSpider, self).__init__(*args, **kwargs)
         self.url = kwargs.get('url')
         self.domain = kwargs.get('domain')
         self.start_urls = [self.url]
