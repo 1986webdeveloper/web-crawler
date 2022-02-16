@@ -14,6 +14,7 @@ class Domain(TimeStampModel):
     name = models.URLField()
     user = models.ForeignKey(User, related_name="domains",
                              on_delete=models.CASCADE)
+    is_fetched = models.BooleanField(default=False)
 
     class Meta:
         unique_together = ("name", "user",)
