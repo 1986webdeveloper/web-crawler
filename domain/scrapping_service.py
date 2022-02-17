@@ -21,6 +21,7 @@ def scrap_url(url):
 
 def scrap_and_store_url(domain):
     scrapper = DomainUrlScrapper(domain.name)
+    DomainUrl.objects.filter(domain=domain).delete()
     url_list = scrapper.scrap()
     for url in url_list:
         DomainUrl.objects.get_or_create(domain=domain,
