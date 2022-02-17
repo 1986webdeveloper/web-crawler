@@ -27,6 +27,14 @@ class Domain(TimeStampModel):
         return "FETCHING URL"
 
 
+class DomainUrl(TimeStampModel):
+    domain = models.ForeignKey(Domain, on_delete=models.CASCADE)
+    url = models.CharField(max_length=1024)
+
+    class Meta:
+        unique_together = ("domain", "url")
+
+
 class Url(TimeStampModel):
     url = models.CharField(max_length=1024)
     domain = models.CharField(max_length=255)
