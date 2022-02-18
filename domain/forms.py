@@ -11,6 +11,6 @@ class DomainForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(DomainForm, self).clean()
-        parsed_url = urlparse(cleaned_data['name'])
-        cleaned_data['name'] = parsed_url.scheme + "://" + parsed_url.netloc
+        parsed_url = urlparse(cleaned_data.get('name'))
+        cleaned_data['name'] = f"{parsed_url.scheme}://{parsed_url.netloc}"
         return cleaned_data

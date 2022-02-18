@@ -5,8 +5,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic import TemplateView, CreateView
 from domain.forms import DomainForm
 from domain.models import Domain
-from threading import Thread
-from domain.scrapping_service import scrap_and_store_url
+from domain.tasks import scrapp_url_in_domain
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
@@ -35,8 +34,6 @@ class CreateDomainView(LoginRequiredMixin, CreateView):
         obj = form.save(commit=False)
         obj.user = self.request.user
         obj.save()
-        t = Thread(target=scrap_and_store_url, args=(obj, ))
-        t.setDaemon(True)
-        t.start()
+        scrapp_url_in_domain.delay(obj.id, )
         return HttpResponseRedirect(self.success_url)
 

@@ -1,10 +1,7 @@
 from urllib.parse import urlparse
-
-from domain.scrap import DomainUrlScrapper
-from scrap_url.scrap_url.spiders.domain import LinkSpider
+from scrap_url.scrap_url.spiders.domain import DomainLinkSpider
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
-from domain.models import Domain, DomainUrl
 
 
 def get_domain_name_from_url(domain_url):
@@ -12,17 +9,9 @@ def get_domain_name_from_url(domain_url):
     return parsed_url.netloc
 
 
-def scrap_url(url):
-    domain_name = get_domain_name_from_url(url)
+def scrap_url(domain_obj):
+    domain_name = get_domain_name_from_url(domain_obj.name)
     process = CrawlerProcess(get_project_settings())
-    process.crawl(LinkSpider, url=url, domain=domain_name)
-    process.start()
-
-
-def scrap_and_store_url(domain):
-    scrapper = DomainUrlScrapper(domain.name)
-    DomainUrl.objects.filter(domain=domain).delete()
-    url_list = scrapper.scrap()
-    for url in url_list:
-        DomainUrl.objects.get_or_create(domain=domain,
-                                        url=url)
+    process.crawl(DomainLinkSpider, url=domain_obj.name, domain=domain_name,
+                  domain_id=domain_obj.id)
+    process.start(stop_after_crawl=False)
