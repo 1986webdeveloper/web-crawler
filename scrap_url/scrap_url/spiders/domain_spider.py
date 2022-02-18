@@ -3,6 +3,7 @@ from scrapy.linkextractors import LinkExtractor
 from urllib.parse import urlparse
 
 from domain.models import Domain
+from domain import tasks
 from scrap_url.scrap_url.items import ScrapUrlItem
 
 
@@ -39,3 +40,6 @@ class DomainLinkSpider(scrapy.Spider):
             s.save()
         except:
             pass
+
+    def close(spider, reason):
+        tasks.scrapp_insight_data_in_domain.delay(spider.domain_id,)
