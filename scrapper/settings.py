@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
     'user.apps.UserConfig',
     'domain.apps.DomainConfig',
+    'page_speed_insights'
 ]
 
 MIDDLEWARE = [
@@ -147,3 +148,4 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
+

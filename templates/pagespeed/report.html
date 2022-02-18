@@ -1,0 +1,92 @@
+{% load data %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+</head>
+{% block content %}
+
+<body>
+  <table>
+                <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Url</th>
+                    <th scope="col">Domain name</th>
+                    <th scope="col">View Details</th>
+                    <th scope="col">First Contentful Paint</th>
+                    <th scope="col">First Contentful Paint Details</th>
+                    <th scope="col">Speed Index</th>
+                    <th scope="col">Speed Index Details</th>
+                    <th scope="col">Largest Contentful Paint</th>
+                    <th scope="col">Largest Contentful Details</th>
+                    <th scope="col">Time to Interactive</th>
+                    <th scope="col">Time to Interactive Details</th>
+                    <th scope="col">Total Blocking Time</th>
+                    <th scope="col">Total Blocking Time Details</th>
+                    <th scope="col">Cumulative Layout Shift</th>
+                    <th scope="col">Cumulative Layout Shift Details</th>
+                    <th scope="col">Server Response</th>
+                    <th scope="col">Server Response Details</th>
+                    <th scope="col">Mainthread Work Breakdown</th>
+                    <th scope="col">Mainthread Work Details</th>
+                    <th scope="col">Unused Javascript</th>
+                    <th scope="col">Unused Javascript Details</th>
+                    <th scope="col">Avoid an excessive DOM size</th>
+
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    {% for report in data %}
+                        <td>{{report.id}}</td>
+                        <td>{{report.url}}</td>
+                        <td>{{report.domain}}</td>
+                        <td>{{report.result.lighthouseResult.audits | first_contentful_paint}}</td>
+                        <td>{{report.result.lighthouseResult.audits | first_contentful_paint_des}}</td>
+                        <td>{{report.result.lighthouseResult.audits | speed_index}}</td>
+                        <td>{{report.result.lighthouseResult.audits | speed_index_des}}</td>
+                        <td>{{report.result.lighthouseResult.audits | largest_contentful_paint}}</td>
+                        <td>{{report.result.lighthouseResult.audits | largest_contentful_paint_des}}</td>
+                        <td>{{report.result.lighthouseResult.audits.interactive.displayValue}}</td>
+                        <td>{{report.result.lighthouseResult.audits.interactive.description}}</td>
+                        <td>{{report.result.lighthouseResult.audits | total_blocking_time}}</td>
+                        <td>{{report.result.lighthouseResult.audits | total_blocking_time_des}}</td>
+                        <td>{{report.result.lighthouseResult.audits | cumulative_layout_shift}}</td>
+                        <td>{{report.result.lighthouseResult.audits | cumulative_layout_shift_des}}</td>
+                        <td>{{report.result.lighthouseResult.audits | server_response_time}}</td>
+                        <td>{{report.result.lighthouseResult.audits | server_response_time_des}}</td>
+                        <td>{{report.result.lighthouseResult.audits | mainthread_work_breakdown}}</td>
+                        <td>{{report.result.lighthouseResult.audits | mainthread_work_breakdown_des}}</td>
+                        <td>{{report.result.lighthouseResult.audits | unused_javascript}}</td>
+                        <td>{{report.result.lighthouseResult.audits | unused_javascript_des}}</td>
+                        <td>{{report.result.lighthouseResult.audits | dom_size}}</td>
+                </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+</body>
+{% endblock %}
+
+</html>
+

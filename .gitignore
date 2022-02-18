@@ -317,5 +317,5 @@ GitHub.sublime-settings
 # Auto-generated tag files
 
 ### Project template
-
+scrapper/local.py
 .pytest_cache/
