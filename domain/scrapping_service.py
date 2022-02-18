@@ -15,5 +15,5 @@ def scrap_url(domain_obj):
     process.crawl(DomainLinkSpider, url=domain_obj.name, domain=domain_name,
                   domain_id=domain_obj.id)
     process.start(stop_after_crawl=False)
-    page_speed_scrap_url(url, domain_name)
+    page_speed_scrap_url(domain_obj.name, domain_name)
     # report_data(url, domain_name)
