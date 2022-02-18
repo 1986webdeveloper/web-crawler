@@ -1,9 +1,13 @@
+from time import sleep
+
 from django.shortcuts import redirect
-from domain.models import DomainUrl
+from domain.models import DomainUrl, Domain
 import os
 import urllib.request
 import json
 from django.shortcuts import render
+
+from scrapper.settings import BASE_DIR
 from .models import PageSeedInsight
 
 # Create your views here.
@@ -16,14 +20,25 @@ def report_data():
     return render("pagespeed/report.html", context)
 
 
-def page_speed_scrap_url(domain_obj):
-    urls = DomainUrl.objects.filter(domain__name=domain_obj.name)
+def page_speed_scrap_url(obj):
+    f = open(os.path.join(BASE_DIR, "test2.log"), "a+")
+    f.write("test12")
+    f.close()
+    urls = DomainUrl.objects.filter(domain=obj)
+    f = open(os.path.join(BASE_DIR, "test3.log"), "a+")
+    len_ = len(urls)
+    f.write(f"{len_}")
+    f.close()
     for i in urls:
-        google_speed_page_url = os.environ['PAGESPEED_URLS'] + '?url=' + i.url + '&key=' + os.environ['PAGESPEED_KEY']
-        page_speed_insights_response = urllib.request.urlopen(google_speed_page_url)
-        convert_to_json = json.loads(page_speed_insights_response.read())
-        PageSeedInsight.objects.create(url=i.url, domain=i.domain.name, result=convert_to_json)
-    return redirect("page_speed_insights:report")
+        try:
+            google_speed_page_url = os.environ['PAGESPEED_URLS'] + '?url=' + i.url + '&key=' + os.environ['PAGESPEED_KEY']
+            page_speed_insights_response = urllib.request.urlopen(google_speed_page_url)
+            convert_to_json = json.loads(page_speed_insights_response.read())
+            PageSeedInsight.objects.create(url=i.url, domain=i.domain.name, result=convert_to_json)
+        except Exception as e:
+            f = open(os.path.join(BASE_DIR, "exception.log"), "a+")
+            f.writelines(str(e))
+            f.close()
 
 
 def detail_report_data(pk):
