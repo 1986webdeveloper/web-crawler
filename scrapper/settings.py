@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 
     'user.apps.UserConfig',
     'domain.apps.DomainConfig',
+    'page_speed_insights'
 ]
 
 MIDDLEWARE = [
@@ -140,3 +141,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOGIN_URL = "/user/login/"
+
+try:
+    from pingcall_insurance.local import *
+except Exception as e:
+    pass
