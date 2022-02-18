@@ -142,7 +142,3 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOGIN_URL = "/user/login/"
 
-try:
-    from pingcall_insurance.local import *
-except Exception as e:
-    pass
