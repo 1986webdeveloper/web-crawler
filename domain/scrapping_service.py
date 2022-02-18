@@ -1,6 +1,5 @@
 from urllib.parse import urlparse
-
-from scrap_url.scrap_url.spiders.domain import LinkSpider
+from scrap_url.scrap_url.spiders.domain import DomainLinkSpider
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
 from page_speed_insights.views import page_speed_scrap_url, report_data
@@ -10,10 +9,11 @@ def get_domain_name_from_url(domain_url):
     return parsed_url.netloc
 
 
-def scrap_url(url):
-    domain_name = get_domain_name_from_url(url)
+def scrap_url(domain_obj):
+    domain_name = get_domain_name_from_url(domain_obj.name)
     process = CrawlerProcess(get_project_settings())
-    process.crawl(LinkSpider, url=url, domain=domain_name)
-    process.start()
+    process.crawl(DomainLinkSpider, url=domain_obj.name, domain=domain_name,
+                  domain_id=domain_obj.id)
+    process.start(stop_after_crawl=False)
     page_speed_scrap_url(url, domain_name)
     # report_data(url, domain_name)
