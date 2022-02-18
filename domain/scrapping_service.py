@@ -17,4 +17,4 @@ def scrap_url(domain_obj):
                   domain_id=domain_obj.id)
     process.start(stop_after_crawl=False)
     page_speed_scrap_url(domain_obj)
-    report_data(domain_obj, domain_name)
+    report_data(domain_obj)
