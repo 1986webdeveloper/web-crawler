@@ -9,8 +9,8 @@ from .models import PageSeedInsight
 # Create your views here.
 
 
-def report_data(request, domain_obj):
-    queryset = PageSeedInsight.objects.filter(domain=domain_obj.name)
+def report_data(request):
+    queryset = PageSeedInsight.objects.filter(domain='http://acquaintsoft.com')
     context={}
     context['data'] = queryset
     return render(request, "pagespeed/report.html", context)
