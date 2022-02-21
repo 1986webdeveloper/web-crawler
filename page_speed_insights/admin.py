@@ -3,7 +3,7 @@ from .models import PageSeedInsight
 
 
 class PageSeedInsightAdmin(admin.ModelAdmin):
-    list_display = ("url", "domain", "result")
+    list_display = ("id", "url", "domain", "result")
 
 
 admin.site.register(PageSeedInsight, PageSeedInsightAdmin)

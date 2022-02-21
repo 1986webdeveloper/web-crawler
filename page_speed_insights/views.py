@@ -1,23 +1,27 @@
-from time import sleep
-
-from django.shortcuts import redirect
-from domain.models import DomainUrl, Domain
+from domain.models import DomainUrl
 import os
 import urllib.request
 import json
 from django.shortcuts import render
-
 from scrapper.settings import BASE_DIR
 from .models import PageSeedInsight
+from rest_framework.exceptions import NotFound
 
 # Create your views here.
 
 
-def report_data():
+def report_data(request):
     queryset = PageSeedInsight.objects.filter(domain='http://acquaintsoft.com')
     context={}
     context['data'] = queryset
-    return render("pagespeed/report.html", context)
+    return render(request, "pagespeed/report.html", context)
+
+
+def detail_report_data(request, pk):
+    queryset = PageSeedInsight.objects.filter(id=pk)
+    context = {}
+    context['data'] = queryset
+    return render(request, "pagespeed/report_data.html", context)
 
 
 def page_speed_scrap_url(obj):
@@ -39,10 +43,5 @@ def page_speed_scrap_url(obj):
             f = open(os.path.join(BASE_DIR, "exception.log"), "a+")
             f.writelines(str(e))
             f.close()
+            raise NotFound("Something went wrong")
 
-
-def detail_report_data(pk):
-    queryset = PageSeedInsight.objects.filter(id=pk)
-    context = {}
-    context['data'] = queryset
-    return render("pagespeed/report_data.html", context)
