@@ -2,9 +2,11 @@ import scrapy
 from scrapy.linkextractors import LinkExtractor
 from urllib.parse import urlparse
 
-from domain.models import Domain
+from domain.models import Domain, DomainUrl
 from domain import tasks
 from scrap_url.scrap_url.items import ScrapUrlItem
+import xmltodict
+import requests
 
 
 class DomainLinkSpider(scrapy.Spider):
@@ -37,6 +39,12 @@ class DomainLinkSpider(scrapy.Spider):
         s["url"] = url
         s["domain"] = self.domain_obj
         try:
+            if 'sitemap' in s["url"]:
+                site_map = xmltodict.parse(requests.get(s["url"]).text)
+                urls = [url["loc"] for url in site_map["urlset"]["url"]]
+                for i in urls:
+                    obj, created = DomainUrl.objects.get_or_create(domain=self.domain_obj, url=i)
+                del s["url"]
             s.save()
         except:
             pass
