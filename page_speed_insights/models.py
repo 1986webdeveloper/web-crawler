@@ -10,6 +10,7 @@ class PageSeedInsight(TimeStampModel):
     url = models.CharField(max_length=1024)
     domain = models.CharField(max_length=1024)
     result = JSONField()
+    cron_flag = models.BooleanField(default=False)
 
     def __str__(self):
         return self.url
