@@ -112,7 +112,16 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+DEFAULT_FROM_EMAIL = "no-reply@axad.com"
+DEFAULT_TO_EMAIL = ""
+DOMAIN_URL = "http://localhost:8000"
+MAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'felixthomas727@gmail.com'
+EMAIL_HOST_PASSWORD = 'Pro&654321~'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -142,6 +151,9 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LOGIN_URL = "/user/login/"
 
+CRONJOBS = [
+    ('* * * * *', 'scrapper.cron.ReportRunning')
+]
 BROKER_URL = 'redis://localhost:6379'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']

@@ -5,13 +5,14 @@ import json
 from django.shortcuts import render
 from scrapper.settings import BASE_DIR
 from .models import PageSeedInsight
-from rest_framework.exceptions import NotFound
+from .task import send_report_status
+from django.contrib.auth.models import User
 
 # Create your views here.
 
 
 def report_data(request):
-    queryset = PageSeedInsight.objects.filter(domain='http://acquaintsoft.com')
+    queryset = PageSeedInsight.objects.filter(domain='https://acquaintsoft.com')
     context={}
     context['data'] = queryset
     return render(request, "pagespeed/report.html", context)
@@ -25,6 +26,7 @@ def detail_report_data(request, pk):
 
 
 def page_speed_scrap_url(obj):
+    Email = User.objects.filter(email=obj.user.email).first()
     f = open(os.path.join(BASE_DIR, "test2.log"), "a+")
     f.write("test12")
     f.close()
@@ -33,6 +35,7 @@ def page_speed_scrap_url(obj):
     len_ = len(urls)
     f.write(f"{len_}")
     f.close()
+
     for i in urls:
         try:
             google_speed_page_url = os.environ['PAGESPEED_URLS'] + '?url=' + i.url + '&key=' + os.environ['PAGESPEED_KEY']
@@ -43,5 +46,14 @@ def page_speed_scrap_url(obj):
             f = open(os.path.join(BASE_DIR, "exception.log"), "a+")
             f.writelines(str(e))
             f.close()
-            raise NotFound("Something went wrong")
+            continue
+    send_report_status(Email)
 
+
+def flag_data(request):
+    data = request.POST["flag"]
+    queryset = PageSeedInsight.objects.all()
+    for i in queryset:
+        i.cron_flag = data
+        i.save()
+    return render(request, "pagespeed/report.html")
