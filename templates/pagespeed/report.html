@@ -132,12 +132,9 @@ tr:nth-child(even) {
 <script>
    $(document).on("change", ".on_off", function () {
          if ($(this).is(':checked')) {
-            console.log("test")
             var flag = "True"
           } else {
             var flag = "False"
-            console.log("test2")
-
           }
          var id = $(this).attr('id');
             $.ajax({
