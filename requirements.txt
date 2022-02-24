@@ -24,6 +24,7 @@ Deprecated==1.2.13
 Django==3.2.12
 django-ajax-datatable==4.4.2
 django-crispy-forms==1.13.0
+django-crontab==0.7.1
 django-environ==0.8.1
 django-widget-tweaks==1.4.11
 djangorestframework==3.13.1
