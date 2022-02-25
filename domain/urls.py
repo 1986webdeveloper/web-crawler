@@ -1,7 +1,10 @@
+"""
+    import needed things
+"""
 from django.urls import path
 from domain.views import DashboardView, funct, CreateDomainView
 
-app_name = "domain"
+APP_NAME = "domain"
 urlpatterns = [
     path("", funct, name="home"),
     path("dashboard/", DashboardView.as_view(), name="dashboard"),
