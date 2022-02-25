@@ -25,14 +25,15 @@ class DomainLinkSpider(scrapy.Spider):
         self.domain_obj = Domain.objects.get(id=self.domain_id)
 
     def start_requests(self):
-        xml_url = self.url + "/sitemap.xml"
         yield Request(self.url)
-        yield Request(xml_url, callback=self.parse_xml)
+        yield Request(self.sitemap_url(), callback=self.parse_xml)
 
     def parse_xml(self, response):
         site_map = xmltodict.parse(response.text)
         urls = [url["loc"] for url in site_map["urlset"]["url"]]
         for url in urls:
+            if url == self.sitemap_url():
+                continue
             self.store_in_db(url=url)
             self.links.add(url)
             yield response.follow(url, self.parse)
@@ -40,6 +41,8 @@ class DomainLinkSpider(scrapy.Spider):
     def parse(self, response):
         le = LinkExtractor()
         for link in le.extract_links(response):
+            if link.url == self.sitemap_url():
+                continue
             parsed_url = urlparse(link.url)
             if parsed_url.netloc == self.domain_name:
                 if link.url not in self.links:
@@ -55,6 +58,9 @@ class DomainLinkSpider(scrapy.Spider):
             s.save()
         except:
             pass
+
+    def sitemap_url(self):
+        return self.url + "/sitemap.xml"
 
     def close(spider, reason):
         tasks.scrapp_insight_data_in_domain.delay(spider.domain_id,)
