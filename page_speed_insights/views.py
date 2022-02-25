@@ -1,21 +1,17 @@
-"""
-    Import needed things
-"""
-import json
+from domain.models import DomainUrl
 import os
 import urllib.request
-import logging
+import json
 from django.shortcuts import render
-from django.contrib.auth.models import User
-from domain.models import DomainUrl
+from scrapper.settings import BASE_DIR
 from .models import PageSeedInsight
 from .task import send_report_status
+from django.contrib.auth.models import User
+
+# Create your views here.
 
 
 def report_data(request):
-    """
-       report_data for done report
-    """
     queryset = PageSeedInsight.objects.filter(domain='https://acquaintsoft.com')
     context={}
     context['data'] = queryset
@@ -23,9 +19,6 @@ def report_data(request):
 
 
 def detail_report_data(request, pk):
-    """
-         detail_report_data for done report
-    """
     queryset = PageSeedInsight.objects.filter(id=pk)
     context = {}
     context['data'] = queryset
@@ -33,29 +26,31 @@ def detail_report_data(request, pk):
 
 
 def page_speed_scrap_url(obj):
-    """
-            page_speed_scrap_url for google speed page API
-    """
-    email = User.objects.filter(email=obj.user.email).first()
+    Email = User.objects.filter(email=obj.user.email).first()
+    f = open(os.path.join(BASE_DIR, "test2.log"), "a+")
+    f.write("test12")
+    f.close()
     urls = DomainUrl.objects.filter(domain=obj)
+    f = open(os.path.join(BASE_DIR, "test3.log"), "a+")
+    len_ = len(urls)
+    f.write(f"{len_}")
+    f.close()
 
     for i in urls:
         try:
-            google_speed_page_url = os.environ['PAGESPEED_URLS'] + '?url=' + i.url + '&key=' \
-                                    + os.environ['PAGESPEED_KEY']
+            google_speed_page_url = os.environ['PAGESPEED_URLS'] + '?url=' + i.url + '&key=' + os.environ['PAGESPEED_KEY']
             page_speed_insights_response = urllib.request.urlopen(google_speed_page_url)
             convert_to_json = json.loads(page_speed_insights_response.read())
             PageSeedInsight.objects.create(url=i.url, domain=i.domain.name, result=convert_to_json)
-        except Exception as error:
-            logging.exception(error)
+        except Exception as e:
+            f = open(os.path.join(BASE_DIR, "exception.log"), "a+")
+            f.writelines(str(e))
+            f.close()
             continue
-    send_report_status(email)
+    send_report_status(Email)
 
 
 def flag_data(request):
-    """
-           Flag Data for cron
-    """
     data = request.POST["flag"]
     queryset = PageSeedInsight.objects.all()
     for i in queryset:
