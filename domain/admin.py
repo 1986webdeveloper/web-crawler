@@ -28,3 +28,5 @@ class DomainUrlModelAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Domain, DomainModelAdmin)
+admin.site.register(Url, UrlModelAdmin)
+admin.site.register(DomainUrl, DomainUrlModelAdmin)

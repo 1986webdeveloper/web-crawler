@@ -23,8 +23,6 @@ class Domain(TimeStampModel):
     """
             Domain Details
     """
-    DoesNotExist = None
-    objects = None
     name = models.URLField()
     user = models.ForeignKey(User, related_name="domains",
                              on_delete=models.CASCADE)
@@ -51,7 +49,6 @@ class DomainUrl(TimeStampModel):
     """
         DomainUrl is for storing data of domain name and url
     """
-    objects = None
     domain = models.ForeignKey(Domain, on_delete=models.CASCADE)
     url = models.CharField(max_length=1024)
 
