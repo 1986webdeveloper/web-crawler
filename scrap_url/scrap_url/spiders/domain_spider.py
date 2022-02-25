@@ -20,14 +20,14 @@ class DomainLinkSpider(scrapy.Spider):
         self.domain_id = kwargs.get('domain_id')
         self.start_urls = [self.url]
         self.allowed_domains = [self.domain]
-        self.links = set(self.start_urls)
+        self.links = set()
         self.domain_name = self.domain
         self.domain_obj = Domain.objects.get(id=self.domain_id)
 
     def start_requests(self):
         xml_url = self.url + "/sitemap.xml"
-        yield Request(xml_url, callback=self.parse_xml)
         yield Request(self.url)
+        yield Request(xml_url, callback=self.parse_xml)
 
     def parse_xml(self, response):
         site_map = xmltodict.parse(response.text)
