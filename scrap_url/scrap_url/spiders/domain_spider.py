@@ -1,12 +1,12 @@
 import scrapy
+from scrapy import Request
 from scrapy.linkextractors import LinkExtractor
 from urllib.parse import urlparse
 
-from domain.models import Domain, DomainUrl
+from domain.models import Domain
 from domain import tasks
 from scrap_url.scrap_url.items import ScrapUrlItem
 import xmltodict
-import requests
 
 
 class DomainLinkSpider(scrapy.Spider):
@@ -20,9 +20,22 @@ class DomainLinkSpider(scrapy.Spider):
         self.domain_id = kwargs.get('domain_id')
         self.start_urls = [self.url]
         self.allowed_domains = [self.domain]
-        self.links = set(self.start_urls)
+        self.links = set()
         self.domain_name = self.domain
         self.domain_obj = Domain.objects.get(id=self.domain_id)
+
+    def start_requests(self):
+        xml_url = self.url + "/sitemap.xml"
+        yield Request(self.url)
+        yield Request(xml_url, callback=self.parse_xml)
+
+    def parse_xml(self, response):
+        site_map = xmltodict.parse(response.text)
+        urls = [url["loc"] for url in site_map["urlset"]["url"]]
+        for url in urls:
+            self.store_in_db(url=url)
+            self.links.add(url)
+            yield response.follow(url, self.parse)
 
     def parse(self, response):
         le = LinkExtractor()
@@ -39,12 +52,6 @@ class DomainLinkSpider(scrapy.Spider):
         s["url"] = url
         s["domain"] = self.domain_obj
         try:
-            if 'sitemap' in s["url"]:
-                site_map = xmltodict.parse(requests.get(s["url"]).text)
-                urls = [url["loc"] for url in site_map["urlset"]["url"]]
-                for i in urls:
-                    obj, created = DomainUrl.objects.get_or_create(domain=self.domain_obj, url=i)
-                del s["url"]
             s.save()
         except:
             pass

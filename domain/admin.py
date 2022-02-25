@@ -12,7 +12,7 @@ class UrlModelAdmin(admin.ModelAdmin):
 
 class DomainUrlModelAdmin(admin.ModelAdmin):
     list_display = ("url", "domain")
-    search_fields = ("url", )
+    search_fields = ("url", "domain__name" )
 
 
 admin.site.register(Domain, DomainModelAdmin)
