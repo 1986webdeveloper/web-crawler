@@ -24,7 +24,7 @@ class DomainUrlModelAdmin(admin.ModelAdmin):
             Getting DomainUrlModelAdmin Details
     """
     list_display = ("url", "domain")
-    search_fields = ("url", )
+    search_fields = ("url", "domain__name")
 
 
 admin.site.register(Domain, DomainModelAdmin)

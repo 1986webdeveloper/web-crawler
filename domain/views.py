@@ -26,7 +26,7 @@ class DashboardView(LoginRequiredMixin, TemplateView):
         return context
 
 
-def funct():
+def funct(request):
     """
         funct for redirecting to dashboard
     """
@@ -52,5 +52,5 @@ class CreateDomainView(LoginRequiredMixin, CreateView):
         obj = form.save(commit=False)
         obj.user = self.request.user
         obj.save()
-        scrapp_url_in_domain.delay(obj.id, )
+        scrapp_url_in_domain.delay(obj.id)
         return HttpResponseRedirect(self.success_url)
