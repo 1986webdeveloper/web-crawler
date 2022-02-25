@@ -1,5 +1,9 @@
+"""
+    import needed things
+"""
 import sys
 import os
+import django
 # Scrapy settings for scrap_url project
 #
 # For simplicity, this file contains only settings considered important or
@@ -82,22 +86,15 @@ ROBOTSTXT_OBEY = True
 #AUTOTHROTTLE_DEBUG = False
 
 # Enable and configure HTTP caching (disabled by default)
-# See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings
 #HTTPCACHE_ENABLED = True
 #HTTPCACHE_EXPIRATION_SECS = 0
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
-import environ
-import os
-from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-from django.urls import reverse
 
 sys.path.append(os.path.dirname(os.path.abspath('.')))
 print(os.path.dirname(os.path.abspath('.')))
-import os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'scrapper.settings'
-import django
 django.setup()

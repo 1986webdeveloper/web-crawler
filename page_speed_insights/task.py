@@ -1,20 +1,26 @@
+"""
+    Import needed things
+"""
+
 from django.template import loader
 from django.core.mail import send_mail
 from scrapper.settings import (
-    DEFAULT_FROM_EMAIL,
-    DOMAIN_URL
+    DEFAULT_FROM_EMAIL
 )
 
 
-def send_report_status(Email):
+def send_report_status(email):
+    """
+        Email sent after report done
+    """
     try:
         email_subject = "Report Status"
-        t = loader.get_template("email_templates/report_status.html")
-        c = {"Message": "Report Done"}
-        email_body = t.render(c)
+        templates = loader.get_template("email_templates/report_status.html")
+        message = {"Message": "Report Done"}
+        email_body = templates.render(message)
 
         from_email = DEFAULT_FROM_EMAIL
-        to_email = Email.email
+        to_email = email.email
 
         send_mail(
             email_subject,
@@ -24,5 +30,5 @@ def send_report_status(Email):
             html_message=email_body,
         )
     except Exception as exc:
-       print(str(exc))
+        print(str(exc))
     return
