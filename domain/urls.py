@@ -1,6 +1,3 @@
-"""
-    import needed things
-"""
 from django.urls import path
 from domain.views import DashboardView, funct, CreateDomainView
 

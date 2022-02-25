@@ -1,20 +1,14 @@
-"""
- import needed things
-"""
+#!/usr/bin/env python
+"""Django's command-line utility for administrative tasks."""
 import os
 import sys
-from django.core.management import execute_from_command_line
 
-#!/usr/bin/env python
-"""
-Django's command-line utility for administrative tasks.
-"""
 
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'scrapper.settings')
     try:
-        execute_from_command_line
+        from django.core.management import execute_from_command_line
     except ImportError as exc:
         raise ImportError(
             "Couldn't import Django. Are you sure it's installed and "
