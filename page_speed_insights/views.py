@@ -12,11 +12,11 @@ from .models import PageSeedInsight
 from .task import send_report_status
 
 
-def report_data(request, obj):
+def report_data(request):
     """
        report_data for done report
     """
-    queryset = PageSeedInsight.objects.filter(domain=obj)
+    queryset = PageSeedInsight.objects.filter(domain='https://acquaintsoft.com')
     context={}
     context['data'] = queryset
     return render(request, "pagespeed/report.html", context)
