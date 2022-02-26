@@ -2,14 +2,14 @@
     Import admin model for showing details of admin
 """
 from django.contrib import admin
-from domain.models import Domain, Url, DomainUrl
+from domain.models import Domain, DomainUrl
 
 
 class DomainModelAdmin(admin.ModelAdmin):
     """
         Getting DomainModelAdmin Details
     """
-    list_display = ("id", "user", "name")
+    list_display = ("id", "user", "name", "status")
 
 
 class UrlModelAdmin(admin.ModelAdmin):
@@ -28,5 +28,4 @@ class DomainUrlModelAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Domain, DomainModelAdmin)
-admin.site.register(Url, UrlModelAdmin)
 admin.site.register(DomainUrl, DomainUrlModelAdmin)

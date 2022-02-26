@@ -26,6 +26,8 @@ def scrapp_insight_data_in_domain(domain_obj_id):
     """
     try:
         obj = Domain.objects.get(id=domain_obj_id)
+        obj.status = 1
+        obj.save()
         page_speed_scrap_url(obj)
     except Domain.DoesNotExist:
         pass

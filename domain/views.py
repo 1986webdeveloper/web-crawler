@@ -5,26 +5,24 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from django.views.generic import TemplateView, CreateView
+from django.views.generic import CreateView, ListView
 from domain.forms import DomainForm
 from domain.models import Domain
 from domain.tasks import scrapp_url_in_domain
 
 
-
-class DashboardView(LoginRequiredMixin, TemplateView):
+class DashboardView(LoginRequiredMixin, ListView):
     """
         DashboardView
     """
     template_name = 'domain/dashboard.html'
+    paginate_by = 10
 
-    def get_context_data(self, **kwargs):
+    def get_queryset(self):
         """
             For getting get_context_data
         """
-        context = super(DashboardView, self).get_context_data()
-        context["domains"] = Domain.objects.filter(user=self.request.user)
-        return context
+        return Domain.objects.filter(user=self.request.user).order_by('-created_at')
 
 
 def funct(request):
@@ -47,8 +45,8 @@ class CreateDomainView(LoginRequiredMixin, CreateView):
              Form validation
         """
         name = form.cleaned_data["name"]
-        if self.request.user.domains.filter(name=name).exists():
-            form.add_error("name", "This domain exist.")
+        if self.request.user.domains.filter(name=name, status__in=[0,1]).exists():
+            form.add_error("name", "Report generate is in progress.")
             return self.form_invalid(form)
         obj = form.save(commit=False)
         obj.user = self.request.user

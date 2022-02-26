@@ -12,14 +12,12 @@ from .models import PageSeedInsight
 from .task import send_report_status
 
 
-def report_data(request):
+def report_data(request, pk):
     """
        report_data for done report
     """
-    queryset = PageSeedInsight.objects.filter(domain='https://acquaintsoft.com')
-    context={}
-    context['data'] = queryset
-    return render(request, "pagespeed/report.html", context)
+    queryset = PageSeedInsight.objects.filter(domain_fk=pk)
+    return render(request, "pagespeed/report.html", {"data" : queryset})
 
 
 def detail_report_data(request, pk):
@@ -45,10 +43,13 @@ def page_speed_scrap_url(obj):
                                     + os.environ['PAGESPEED_KEY']
             page_speed_insights_response = urllib.request.urlopen(google_speed_page_url)
             convert_to_json = json.loads(page_speed_insights_response.read())
-            PageSeedInsight.objects.create(url=i.url, domain=i.domain.name, result=convert_to_json)
+            PageSeedInsight.objects.create(url=i.url, domain=i.domain.name, result=convert_to_json, domain_fk=obj)
         except Exception as error:
             logging.exception(error)
             continue
+
+    obj.status = 2
+    obj.save()
     send_report_status(email)
 
 
