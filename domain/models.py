@@ -20,29 +20,19 @@ class TimeStampModel(models.Model):
 
 
 class Domain(TimeStampModel):
-    """
-            Domain Details
-    """
+    """Domain table"""
+    STATUS_CHOICES = (
+        (0, "Fetching Url"),
+        (1, "Fetching Page Speed Data"),
+        (2, "Done"),
+    )
     name = models.URLField()
     user = models.ForeignKey(User, related_name="domains",
                              on_delete=models.CASCADE)
-    is_fetched = models.BooleanField(default=False)
-
-    class Meta:
-        """
-             Meta For unique_together
-        """
-        unique_together = ("name", "user",)
+    status = models.PositiveSmallIntegerField(choices=STATUS_CHOICES, default=0)
 
     def __str__(self):
         return str(self.name)
-
-    @property
-    def status(self):
-        """
-            Status Of fetching url
-        """
-        return "FETCHING URL"
 
 
 class DomainUrl(TimeStampModel):
@@ -57,14 +47,3 @@ class DomainUrl(TimeStampModel):
               Meta for unique_together
         """
         unique_together = ("domain", "url")
-
-
-class Url(TimeStampModel):
-    """
-         Storing Url Data
-    """
-    url = models.CharField(max_length=1024)
-    domain = models.CharField(max_length=255)
-
-    def __str__(self):
-        return str(self.url)

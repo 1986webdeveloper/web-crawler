@@ -3,10 +3,10 @@
 
 {% block extra_header %}
     <li class="nav-item active">
-        <a class="nav-link" href="{% url 'domain:dashboard' %}">Dashboard</a>
+        <a class="nav-link" href="{% url 'domain:dashboard' %}">My Reports</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="{% url 'domain:add' %}">Add Domain</a>
+        <a class="nav-link" href="{% url 'domain:add' %}">Generate New Report</a>
     </li>
 {% endblock %}
 
@@ -19,21 +19,67 @@
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Domain name</th>
-                    <th scope="col">Created At</th>
+                    <th scope="col">Report generate time</th>
                     <th scope="col">Status</th>
                 </tr>
                 </thead>
                 <tbody>
-                {% for domain in domains %}
+                {% for domain in object_list %}
                 <tr>
                     <th scope="row">{{ forloop.counter }}</th>
                     <td>{{ domain.name }}</td>
                     <td>{{ domain.created_at }}</td>
-                    <td> {{ domain.status }}</td>
+                    <td> {% if domain.status == 2 %}<a href="{% url 'page_speed_insights:show_data' domain.id %}">View</a> {% else %}{{ domain.get_status_display }}{% endif %}</td>
                 </tr>
                 {% endfor %}
                 </tbody>
             </table>
+            <!--Pagination-->
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                  </li>
+                {% else %}
+                    <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="True">Previous</a>
+                  </li>
+                {% endif %}
+
+                {% if page_obj.number|add:'-4' > 1 %}
+                    <li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'-5' }}">&hellip;</a></li>
+                {% endif %}
+
+                {% for i in page_obj.paginator.page_range %}
+                    {% if page_obj.number == i %}
+                        <li class="page-item active" aria-current="page">
+                      <span class="page-link">
+                        {{ i }}
+                        <span class="sr-only">(current)</span>
+                      </span>
+                    </li>
+                    {% elif i > page_obj.number|add:'-5' and i < page_obj.number|add:'5' %}
+                         <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.paginator.num_pages > page_obj.number|add:'4' %}
+                   <li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'5' }}">&hellip;</a></li>
+                {% endif %}
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                  </li>
+                {% else %}
+                    <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1" aria-disabled="True">Next</a>
+                  </li>
+                {% endif %}
+              </ul>
+            </nav>
+            <!--end of Pagination-->
         </div>
     </div>
 {% endblock %}
