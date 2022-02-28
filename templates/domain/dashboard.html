@@ -14,6 +14,7 @@
     <div class="card">
         <div class="card-body">
             <h5 class="card-title">Welcome, {{request.user}}</h5>
+            {% include 'partial/alert-msg.html' %}
             <table class="table table-bordered">
                 <thead>
                 <tr>
@@ -29,7 +30,15 @@
                     <th scope="row">{{ forloop.counter }}</th>
                     <td>{{ domain.name }}</td>
                     <td>{{ domain.created_at }}</td>
-                    <td> {% if domain.status == 2 %}<a href="{% url 'page_speed_insights:show_data' domain.id %}">View</a> {% else %}{{ domain.get_status_display }}{% endif %}</td>
+                    <td>
+                        {% if domain.status == 2 %}
+                            <a class="btn btn-primary" href="{% url 'page_speed_insights:show_data' domain.id %}">View</a>
+                        {% else %}
+                            <button class="btn btn-primary" disabled>
+                                <span class="spinner-border spinner-border-sm"></span> {{ domain.get_status_display }}
+                            </button>
+                        {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
                 </tbody>
