@@ -6,6 +6,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, ListView
+from django.contrib import messages
 from domain.forms import DomainForm
 from domain.models import Domain
 from domain.tasks import scrapp_url_in_domain
@@ -52,4 +53,5 @@ class CreateDomainView(LoginRequiredMixin, CreateView):
         obj.user = self.request.user
         obj.save()
         scrapp_url_in_domain.delay(obj.id)
+        messages.success(self.request, f"Report generating for {name} has been start!")
         return HttpResponseRedirect(self.success_url)
