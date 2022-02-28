@@ -98,6 +98,7 @@ tr:nth-child(even) {
 {% block content %}
 
 <body>
+{% if data %}
         <label style="font-size:22px;"><b>If you want generate report after 3 days click here</b></label>
         <div class="custom-control custom-switch">
             <input type="checkbox" class="on_off" value="True" id="new_chat_message_received">
@@ -123,7 +124,9 @@ tr:nth-child(even) {
                     {% endfor %}
                 </tbody>
             </table>
-
+{% else %}
+    <label style="font-size:22px;"><b>No Data Found!!</b></label>
+{% endif %}
 </body>
 {% endblock %}
 
