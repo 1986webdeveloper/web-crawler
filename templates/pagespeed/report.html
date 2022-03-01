@@ -6,7 +6,6 @@
 {% block extrastyle %}
     <link href="{% static 'style.css' %}" rel="stylesheet" />
     <link href="{% static 'ajax_datatable/css/style.css' %}" rel="stylesheet" />
-    <link rel='stylesheet' href="{% static 'datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.4/css/dataTables.bootstrap4.min.css">
 {% endblock extrastyle %}
 
@@ -62,8 +61,10 @@
                 full_row_select: true,
                 scrollX: false,
                 details: false,
+                full_row_select: false,
             },
         );
     });
+
 </script>
 {% endblock %}

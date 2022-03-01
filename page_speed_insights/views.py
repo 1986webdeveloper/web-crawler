@@ -80,11 +80,8 @@ class PageInsightAjaxDatatableView(AjaxDatatableView):
     column_defs = [
         {'name': 'id', 'visible': False, },
         {'name': 'url', 'visible': True, },
-        {'name': 'action', 'visible': True, 'searchable': False},
+        {'name': 'action', 'visible': True, 'searchable': False, "orderable": False},
     ]
-
-    def render_row_details(self, pk, request=None):
-        return
 
     def get_initial_queryset(self, request=None):
         domain_id = self.request.resolver_match.kwargs.get('pk')
