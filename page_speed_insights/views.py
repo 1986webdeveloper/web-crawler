@@ -5,19 +5,25 @@ import json
 import os
 import urllib.request
 import logging
+
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.contrib.auth.models import User
-from domain.models import DomainUrl
+from django.urls import reverse
+
+from domain.models import DomainUrl, Domain
 from .models import PageSeedInsight
 from .task import send_report_status
+from ajax_datatable.views import AjaxDatatableView
 
 
 def report_data(request, pk):
     """
        report_data for done report
     """
-    queryset = PageSeedInsight.objects.filter(domain_fk=pk)
-    return render(request, "pagespeed/report.html", {"data" : queryset})
+    domain = Domain.objects.get(id=pk)
+    exists = PageSeedInsight.objects.filter(domain_fk=pk).exists()
+    return render(request, "pagespeed/report.html", {"exists": exists, "domain": domain})
 
 
 def detail_report_data(request, pk):
@@ -53,13 +59,33 @@ def page_speed_scrap_url(obj):
     send_report_status(email)
 
 
-def flag_data(request):
+def flag_data(request, pk):
     """
            Flag Data for cron
     """
     data = request.POST["flag"]
-    queryset = PageSeedInsight.objects.all()
-    for i in queryset:
-        i.cron_flag = data
-        i.save()
-    return render(request, "pagespeed/report.html")
+    PageSeedInsight.objects.filter(domain_fk=pk).update(cron_flag = data)
+    return JsonResponse({"message": "Status updated successfully!!"})
+
+
+class PageInsightAjaxDatatableView(AjaxDatatableView):
+
+    model = PageSeedInsight
+    title = 'Page Insight Data'
+    initial_order = [["url", "asc"], ]
+    length_menu = [[10, 20, 50, 100, -1], [10, 20, 50, 100, 'all']]
+    search_values_separator = '+'
+
+    column_defs = [
+        {'name': 'id', 'visible': False, },
+        {'name': 'url', 'visible': True, },
+        {'name': 'action', 'visible': True, 'searchable': False, "orderable": False},
+    ]
+
+    def get_initial_queryset(self, request=None):
+        domain_id = self.request.resolver_match.kwargs.get('pk')
+        return self.model.objects.filter(domain_fk_id=domain_id)
+
+    def customize_row(self, row, obj):
+        text = f"""<a href="{reverse('page_speed_insights:detail_data', args=(obj.id,))}" target="_blank">View</a>"""
+        row['action'] = text
