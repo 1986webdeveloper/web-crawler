@@ -103,3 +103,6 @@ a.disabled {
 a.disabled:hover {
     text-decoration:none;
 }
+#datatable_permissions_length {
+	float: left;
+}

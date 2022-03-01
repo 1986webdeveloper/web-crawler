@@ -22,8 +22,8 @@ def report_data(request, pk):
        report_data for done report
     """
     domain = Domain.objects.get(id=pk)
-    queryset = PageSeedInsight.objects.filter(domain_fk=pk)
-    return render(request, "pagespeed/report.html", {"data": queryset, "domain": domain})
+    exists = PageSeedInsight.objects.filter(domain_fk=pk).exists()
+    return render(request, "pagespeed/report.html", {"exists": exists, "domain": domain})
 
 
 def detail_report_data(request, pk):
@@ -75,7 +75,6 @@ class PageInsightAjaxDatatableView(AjaxDatatableView):
     initial_order = [["url", "asc"], ]
     length_menu = [[10, 20, 50, 100, -1], [10, 20, 50, 100, 'all']]
     search_values_separator = '+'
-
 
     column_defs = [
         {'name': 'id', 'visible': False, },

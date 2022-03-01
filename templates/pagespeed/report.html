@@ -19,12 +19,13 @@
 {% endblock %}
 
 {% block content %}
-
+    {% if exists %}
     <label style="font-size:22px;"><b>If you want generate report after 3 days click here</b></label>
     <div class="custom-control custom-switch">
         <input type="checkbox" class="on_off" value="True" id="new_chat_message_received">
         <input type="hidden" value="{{New_chat_message.is_enable}}" id="new_chat_message_received_">
     </div>
+    {% endif %}
     <table id="datatable_permissions">
     </table>
 {% endblock %}
