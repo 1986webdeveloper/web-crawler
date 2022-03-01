@@ -7,17 +7,21 @@ import urllib.request
 import logging
 from django.shortcuts import render
 from django.contrib.auth.models import User
-from domain.models import DomainUrl
+from django.urls import reverse
+
+from domain.models import DomainUrl, Domain
 from .models import PageSeedInsight
 from .task import send_report_status
+from ajax_datatable.views import AjaxDatatableView
 
 
 def report_data(request, pk):
     """
        report_data for done report
     """
+    domain = Domain.objects.get(id=pk)
     queryset = PageSeedInsight.objects.filter(domain_fk=pk)
-    return render(request, "pagespeed/report.html", {"data" : queryset})
+    return render(request, "pagespeed/report.html", {"data": queryset, "domain": domain})
 
 
 def detail_report_data(request, pk):
@@ -63,3 +67,27 @@ def flag_data(request):
         i.cron_flag = data
         i.save()
     return render(request, "pagespeed/report.html")
+
+
+class PermissionAjaxDatatableView(AjaxDatatableView):
+
+    model = PageSeedInsight
+    title = 'Page Insight Data'
+    initial_order = [["url", "asc"], ]
+    length_menu = [[10, 20, 50, 100, -1], [10, 20, 50, 100, 'all']]
+    search_values_separator = '+'
+
+    column_defs = [
+        AjaxDatatableView.render_row_tools_column_def(),
+        {'name': 'id', 'visible': False, },
+        {'name': 'url', 'visible': True, },
+        {'name': 'action', 'visible': True, },
+    ]
+
+    def get_initial_queryset(self, request=None):
+        domain_id = self.request.resolver_match.kwargs.get('pk')
+        return self.model.objects.filter(domain_fk_id=domain_id)
+
+    def customize_row(self, row, obj):
+        text = f"""<a href="{reverse('page_speed_insights:detail_data', args=(obj.id,))}" target="_blank">View</a>"""
+        row['action'] = text

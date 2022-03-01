@@ -1,10 +1,9 @@
+{% extends 'base.html' %}
 {% load data %}
+{% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+
+{% block extrastyle %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
 table {
@@ -93,44 +92,58 @@ tr:nth-child(even) {
 	-moz-transition: ease .3s;
 	-o-transition: ease .3s;
 }
-</style>
-</head>
-{% block content %}
+a.paginate_button {
+    padding: 10px;
+    cursor: pointer;
+    border: 1px solid #dee2e6;
+    /* background: gray; */
+    background-color: #fff;
+    /* color: blue; */
+}
+a.current {
+    background-color: blue;
+    color: white;
+}
+a.disabled {
+    color: gray;
+    cursor: default;
+}
+a.disabled:hover {
+    text-decoration:none;
+}
 
-<body>
-{% if data %}
-        <label style="font-size:22px;"><b>If you want generate report after 3 days click here</b></label>
-        <div class="custom-control custom-switch">
-            <input type="checkbox" class="on_off" value="True" id="new_chat_message_received">
-            <input type="hidden" value="{{New_chat_message.is_enable}}" id="new_chat_message_received_">
-        </div>
-  <table>
-                <thead>
-                <tr>
-                    <th scope="col">Id</th>
-                    <th scope="col">Url</th>
-                    <th scope="col">Domain name</th>
-                    <th scope="col">View Details</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    {% for report in data %}
-                        <td>{{report.id}}</td>
-                        <td>{{report.url}}</td>
-                        <td>{{report.domain}}</td>
-                        <td><a href="{% url 'page_speed_insights:detail_data' report.id %}">View Details</a></td>
-                </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-{% else %}
-    <label style="font-size:22px;"><b>No Data Found!!</b></label>
-{% endif %}
-</body>
+</style>
+    <link href="{% static 'ajax_datatable/css/style.css' %}" rel="stylesheet" />
+    <!-- link rel='stylesheet' href="{% static 'datatables.net-bs/css/dataTables.bootstrap.min.css' %}" -->
+    <link rel='stylesheet' href="{% static 'datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}">
+    <link rel='stylesheet' href="{% static 'datatables.net-buttons-bs/css/buttons.bootstrap.min.css' %}">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.4/css/dataTables.bootstrap4.min.css">
+{% endblock extrastyle %}
+
+{% block extra_header %}
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'domain:dashboard' %}">My Reports</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'domain:add' %}">Generate New Report</a>
+    </li>
 {% endblock %}
 
-</html>
+{% block content %}
+
+    <label style="font-size:22px;"><b>If you want generate report after 3 days click here</b></label>
+    <div class="custom-control custom-switch">
+        <input type="checkbox" class="on_off" value="True" id="new_chat_message_received">
+        <input type="hidden" value="{{New_chat_message.is_enable}}" id="new_chat_message_received_">
+    </div>
+    <table id="datatable_permissions">
+    </table>
+{% endblock %}
+
+{% block extrajs %}
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script type="text/javascript" src="{% static 'ajax_datatable/js/utils.js' %}"></script>
+    <script src="//cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
 
 <script>
    $(document).on("change", ".on_off", function () {
@@ -149,5 +162,18 @@ tr:nth-child(even) {
                 },
             })
         });
+    $(document).ready(function() {
+        table = AjaxDatatableViewUtils.initialize_table(
+            $('#datatable_permissions'),
+            "{% url 'page_speed_insights:ajax_datatable_permissions' domain.id %}",
+            {
+                // extra_options (example)
+                processing: false,
+                autoWidth: false,
+                full_row_select: true,
+                scrollX: false
+            },
+        );
+    });
 </script>
-
+{% endblock %}

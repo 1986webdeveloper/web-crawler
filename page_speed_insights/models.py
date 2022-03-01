@@ -10,7 +10,6 @@ class PageSeedInsight(TimeStampModel):
     """
        model for PageSeedInsight
     """
-    objects = None
     url = models.CharField(max_length=1024)
     domain = models.CharField(max_length=1024)
     result = JSONField()

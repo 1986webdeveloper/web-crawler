@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'crispy_forms',
+    'ajax_datatable',
 
     'user.apps.UserConfig',
     'domain.apps.DomainConfig',
@@ -160,3 +161,6 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = TIME_ZONE
 
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
