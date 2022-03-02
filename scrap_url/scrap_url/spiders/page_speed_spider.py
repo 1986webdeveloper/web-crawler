@@ -30,8 +30,11 @@ class PageSpeedSpider(scrapy.Spider):
     def parse(self, response, **kwargs):
         """parse response find all url in page with same domain.
          crawl not visited url"""
-        url = response.url.split("&url=")[1]
-        self.store_in_db(url, response.json())
+        try:
+            url = response.url.split("&url=")[1]
+            self.store_in_db(url, response.json())
+        except:
+            pass
 
     def store_in_db(self, url, json):
         """store url in database"""
