@@ -98,3 +98,6 @@ sys.path.append(os.path.dirname(os.path.abspath('.')))
 print(os.path.dirname(os.path.abspath('.')))
 os.environ['DJANGO_SETTINGS_MODULE'] = 'scrapper.settings'
 django.setup()
+
+CONCURRENT_REQUESTS = 320
+CONCURRENT_REQUESTS_PER_DOMAIN = 32
