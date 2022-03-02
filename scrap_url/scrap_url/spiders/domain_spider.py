@@ -36,8 +36,11 @@ class DomainLinkSpider(scrapy.Spider):
 
     def parse_xml(self, response):
         """parse xml response and get url in response"""
-        site_map = xmltodict.parse(response.text)
-        urls = [url["loc"] for url in site_map["urlset"]["url"]]
+        try:
+            site_map = xmltodict.parse(response.text)
+            urls = [url["loc"] for url in site_map["urlset"]["url"]]
+        except Exception as e:
+            urls = []
         for url in urls:
             if url == self.sitemap_url():
                 continue

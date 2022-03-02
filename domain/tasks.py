@@ -3,8 +3,19 @@
 """
 from celery import shared_task
 from domain.models import Domain
-from domain.scrapping_service import scrap_url
-from page_speed_insights.views import page_speed_scrap_url
+from urllib.parse import urlparse
+from scrapy.crawler import CrawlerProcess
+from scrapy.utils.project import get_project_settings
+from scrap_url.scrap_url.spiders.domain_spider import DomainLinkSpider
+from scrap_url.scrap_url.spiders.page_speed_spider import PageSpeedSpider
+
+
+def get_domain_name_from_url(domain_url):
+    """
+       get_domain_name_from_url for getting domain url
+    """
+    parsed_url = urlparse(domain_url)
+    return parsed_url.netloc
 
 
 @shared_task(name="scrapp_url_in_domain")
@@ -14,7 +25,11 @@ def scrapp_url_in_domain(domain_obj_id):
     """
     try:
         obj = Domain.objects.get(id=domain_obj_id)
-        scrap_url(obj)
+        domain_name = get_domain_name_from_url(obj.name)
+        process = CrawlerProcess(get_project_settings())
+        process.crawl(DomainLinkSpider, url=obj.name, domain=domain_name,
+                      domain_id=obj.id)
+        process.start(stop_after_crawl=False)
     except Domain.DoesNotExist:
         pass
 
@@ -28,6 +43,8 @@ def scrapp_insight_data_in_domain(domain_obj_id):
         obj = Domain.objects.get(id=domain_obj_id)
         obj.status = 1
         obj.save()
-        page_speed_scrap_url(obj)
+        process = CrawlerProcess(get_project_settings())
+        process.crawl(PageSpeedSpider, domain_id=obj.id)
+        process.start(stop_after_crawl=False)
     except Domain.DoesNotExist:
         pass
