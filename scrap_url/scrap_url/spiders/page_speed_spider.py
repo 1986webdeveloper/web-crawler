@@ -3,6 +3,8 @@
 import os
 import scrapy
 from scrapy import Request
+
+from page_speed_insights.task import send_report_status
 from scrap_url.scrap_url.items import PageSeedInsightItem
 from domain.models import Domain, DomainUrl
 
@@ -48,4 +50,4 @@ class PageSpeedSpider(scrapy.Spider):
         domain = spider.domain_obj
         domain.status = 2
         domain.save()
-        # tasks.scrapp_insight_data_in_domain.delay(spider.domain_id, )
+        send_report_status(domain.user)
