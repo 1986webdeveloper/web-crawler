@@ -16,14 +16,14 @@ class UrlModelAdmin(admin.ModelAdmin):
     """
            Getting UrlModelAdmin Details
     """
-    list_display = ("url", "domain")
+    list_display = ("id", "url", "domain")
 
 
 class DomainUrlModelAdmin(admin.ModelAdmin):
     """
             Getting DomainUrlModelAdmin Details
     """
-    list_display = ("url", "domain")
+    list_display = ("id", "url", "domain")
     search_fields = ("url", "domain__name")
 
 
